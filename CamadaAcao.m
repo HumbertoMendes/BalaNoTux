@@ -49,7 +49,6 @@ float heroiPontosPorSegY;
 
 // Particula Estrela
 - (void)poeEstrela {
-    CGSize tamanhoTela = [CCDirector sharedDirector].winSize;
     NSArray *estrelinhas = [NSArray arrayWithObjects:
                            @"Stars1.plist", 
                            @"Stars2.plist",
@@ -57,8 +56,8 @@ float heroiPontosPorSegY;
     for(NSString *estrela in estrelinhas) {
         CCParticleSystemQuad *efeitoEstrela = [CCParticleSystemQuad
                                              particleWithFile:estrela];
-        efeitoEstrela.position = ccp(tamanhoTela.width*1.5, tamanhoTela.height/2);
-        efeitoEstrela.posVar = ccp(efeitoEstrela.posVar.x, (tamanhoTela.height/2) * 1.5);
+        efeitoEstrela.position = ccp(winSize.width*1.5, winSize.height/2);
+        efeitoEstrela.posVar = ccp(efeitoEstrela.posVar.x, (winSize.height/2) * 1.5);
         if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
             efeitoEstrela.scale = 0.5;
             efeitoEstrela.posVar = ccpMult(efeitoEstrela.posVar, 2.0);
@@ -91,21 +90,20 @@ float heroiPontosPorSegY;
 
 // Lança e inicia (spawn) o protagonista adicionando um sprite dele no jogo
 - (void)poeProtagonista {
-    CGSize tamanhoJanela = [CCDirector sharedDirector].winSize;
     heroi = [CCSprite spriteWithSpriteFrameName:@"beastie-down40.png"];
     heroi.position = ccp(-heroi.contentSize.width/2,
-                        tamanhoJanela.height * 0.5);
+                        winSize.height * 0.5);
     [batchNode addChild:heroi z:1 tag:heroiTag];
     [heroi runAction:
      [CCSequence actions:
       [CCEaseOut actionWithAction:
        [CCMoveBy actionWithDuration:0.5
-                           position:ccp(heroi.contentSize.width/2 + tamanhoJanela.width*0.3,
+                           position:ccp(heroi.contentSize.width/2 + winSize.width*0.3,
                                         0)]
                              rate:4.0],
       [CCEaseInOut actionWithAction:
        [CCMoveBy actionWithDuration:0.5
-                           position:ccp(-tamanhoJanela.width*0.2, 0)]
+                           position:ccp(-winSize.width*0.2, 0)]
                                rate:4.0],
       nil]];
   
@@ -174,9 +172,7 @@ float heroiPontosPorSegY;
 
 - (void)poeTitulo {
     
-    CGSize tamanhoJanela = [CCDirector sharedDirector].winSize;
-    
-    NSString *fontName = @"fonteCasual.fnt"; 
+    NSString *fontName = @"fonteCasual.fnt";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         fontName = @"fonteCasual-hd.fnt";
     }
@@ -186,7 +182,7 @@ float heroiPontosPorSegY;
     _titulo1.scale = 0;
     
     //_titulo1.scale = 0.5; 
-    _titulo1.position = ccp(tamanhoJanela.width/2, tamanhoJanela.height * 0.8); 
+    _titulo1.position = ccp(winSize.width/2, winSize.height * 0.8);
     [self addChild:_titulo1 z:100];
     
     // efeitos
@@ -201,7 +197,7 @@ float heroiPontosPorSegY;
     _titulo2.scale = 0;
 
     //_titulo2.scale = 1.25; 
-    _titulo2.position = ccp(tamanhoJanela.width/2, tamanhoJanela.height * 0.6); 
+    _titulo2.position = ccp(winSize.width/2, winSize.height * 0.6);
     [self addChild:_titulo2 z:100];
     
     
@@ -220,7 +216,7 @@ float heroiPontosPorSegY;
                                      selector:@selector(apertouInicio:)];
     [clickInicio setScale:0];
     
-    [clickInicio setPosition:ccp(tamanhoJanela.width/2, tamanhoJanela.height * 0.3)];
+    [clickInicio setPosition:ccp(winSize.width/2, winSize.height * 0.3)];
 
     CCMenu *menu = [CCMenu menuWithItems:clickInicio, nil];
     [menu setPosition:CGPointZero];
@@ -238,19 +234,19 @@ float heroiPontosPorSegY;
     // Vidas
     _vidasLabel = [CCLabelBMFont labelWithString:@"Vidas: x" fntFile:fontName];
     _vidasLabel.scale = 0;
-    _vidasLabel.position = ccp(tamanhoJanela.width/8, tamanhoJanela.height * 0.95);
+    _vidasLabel.position = ccp(winSize.width/8, winSize.height * 0.95);
     [self addChild:_vidasLabel z:100];
 
     // Score
     _scoreLabel = [CCLabelBMFont labelWithString:@"Score: x" fntFile:fontName];
     _scoreLabel.scale = 0;
-    _scoreLabel.position = ccp(tamanhoJanela.width/8, tamanhoJanela.height * 0.05);
+    _scoreLabel.position = ccp(winSize.width/8, winSize.height * 0.05);
     [self addChild:_scoreLabel z:100];
     
     // Força do Inimigo
     _forcaInimigoLabel = [CCLabelBMFont labelWithString:@"Resist: x" fntFile:fontName];
     _forcaInimigoLabel.scale = 0;
-    _forcaInimigoLabel.position = ccp(tamanhoJanela.width*0.85, tamanhoJanela.height * 0.05);
+    _forcaInimigoLabel.position = ccp(winSize.width*0.85, winSize.height * 0.05);
     [self addChild:_forcaInimigoLabel z:100];
 
     // Game Over
@@ -263,9 +259,9 @@ float heroiPontosPorSegY;
                         target:self selector:@selector(apertouRestart:)];
     
     
-    [itemRestart setPosition:ccp(tamanhoJanela.width, tamanhoJanela.height/2)];
+    [itemRestart setPosition:ccp(winSize.width, winSize.height/2)];
     
-    CGSize NovoTamanho = CGSizeMake(tamanhoJanela.width, 100);
+    CGSize NovoTamanho = CGSizeMake(winSize.width, 100);
     // Vamos ;tentar corrigir o tamanho da area do click do menu...
     [itemRestart setContentSize:NovoTamanho];
     
@@ -314,7 +310,6 @@ float heroiPontosPorSegY;
 - (void)poeBackground {
     _vidas = 1; // Quando apertar Inicio ou Restart tera 3 vidas
     
-    CGSize winSize = [CCDirector sharedDirector].winSize;
     // Passo 1, criamos o CCParallaxNode
     _backgroundGame = [CCParallaxNode node];
     [self addChild:_backgroundGame z:-2];
@@ -412,7 +407,6 @@ float heroiPontosPorSegY;
 - (void)atualizaInimigo:(ccTime)dt {
     if(!_isGameActive) return;
     
-    //CGSize winSize = [CCDirector sharedDirector].winSize;
     double curTime = CACurrentMediaTime();
 
     if (curTime > proximoInimigoCria) {
@@ -446,7 +440,6 @@ float heroiPontosPorSegY;
 
 -(void)adicionaInimigoSimples{
     
-    CGSize winSize = [CCDirector sharedDirector].winSize;
     CCSprite *inimigo = [inimigosArray nextSprite];
     
     float randY = valorRandEntre(0.0, winSize.height);    
@@ -501,8 +494,6 @@ float heroiPontosPorSegY;
     CCSprite *inimigo = [inimigosArray bossSprite];
     _boss = inimigo;    
     
-    CGSize winSize = [CCDirector sharedDirector].winSize;
-    
     CCMoveBy *movimentoEntrada = [CCMoveBy
                                   actionWithDuration:2
                                   position:ccp(-winSize.width/4, 0)];
@@ -537,7 +528,6 @@ float heroiPontosPorSegY;
 //Movimento de para cima e para baixo do Boss
 -(void)movimentoBoss:(CCNode *)sender{
     
-    CGSize winSize = [CCDirector sharedDirector].winSize;
     int direction = winSize.height-_boss.contentSize.height;
     if(!_moveUp){
         direction = 0+_boss.contentSize.height;
@@ -553,7 +543,6 @@ float heroiPontosPorSegY;
 // Acelerometro
 // AULA 2 - Passo 3
 - (void)atualizaPosicaoHeroi:(ccTime)dt {
-    CGSize winSize = [CCDirector sharedDirector].winSize;
     float maxY = winSize.height - heroi.contentSize.height/2;
     float minY = heroi.contentSize.height/2;
     float newY = heroi.position.y + (heroiPontosPorSegY * dt);
@@ -716,21 +705,22 @@ float heroiPontosPorSegY;
     
     NSArray *objetos = [NSArray arrayWithObjects:_obj2, nil];
     
+    
+    //NSArray *objetos = [NSArray arrayWithObjects:_objeto2, nil];
     for (CCSprite *objeto in objetos) {
-        if ([_backgroundGame convertToWorldSpace:objeto.position].x < -
-            objeto.contentSize.width*self.scale) {
-                [_backgroundGame
-                 incrementOffset:ccp(objeto.contentSize.width* objeto.scale,0)
-                    forChild:objeto];
+        if ([_backgroundGame convertToWorldSpace:objeto.position].x < -objeto.contentSize.width*objeto.scale) {
+            [_backgroundGame incrementOffset:
+             ccp( ((winSize.width / (objeto.contentSize.width*objeto.scale))+2)*objeto.contentSize.width  * objeto.scale,0) forChild:objeto];
         }
     }
-    
-    NSArray *backgrounds = [NSArray arrayWithObjects:_obj1, nil];for (CCSprite *background in backgrounds) {
-        if ([_backgroundGame convertToWorldSpace:background.position].x < - background.contentSize.width*self.scale) {
-            [_backgroundGame incrementOffset:ccp(1000,0) forChild:background];
+    NSArray *backgrounds = [NSArray arrayWithObjects:_obj1, nil];
+    for (CCSprite *background in backgrounds) {
+        
+        if ([_backgroundGame convertToWorldSpace:background.position].x <
+            -(background.contentSize.width*background.scaleX/2 - winSize.width) ) {
+            [_backgroundGame incrementOffset:ccp(2500,0) forChild:background];
         }
     }
-    
 }
 
 // Acelerometro
@@ -769,8 +759,6 @@ float heroiPontosPorSegY;
     float aceleraX = rolaX;
     float aceleraY = rolaY;
     float aceleraZ = rolaZ;
-    
-    CGSize winSize = [CCDirector sharedDirector].winSize;
     
 #define kRestAccelX 0.6
 #define kShipMaxPointsPerSec (winSize.height*0.5)
@@ -845,8 +833,6 @@ float heroiPontosPorSegY;
 - (void)ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     if(!_isGameActive) return;
     
-    CGSize winSize = [CCDirector sharedDirector].winSize;
-
     UITouch *touch = [touches anyObject];
     CGPoint touchLocation = [touch locationInView: [touch view]];
     

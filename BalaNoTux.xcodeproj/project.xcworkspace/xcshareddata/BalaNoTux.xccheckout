@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>DC3ADF62-D1ED-4C04-BA6B-BA17F4E0950A</string>
+	<key>IDESourceControlProjectName</key>
+	<string>BalaNoTux</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>5EEADFBA-A104-41EC-A2F8-8E6C651924EF</key>
+		<string>https://github.com/HumbertoMendes/BalaNoTux.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>BalaNoTux.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>5EEADFBA-A104-41EC-A2F8-8E6C651924EF</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/HumbertoMendes/BalaNoTux.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>5EEADFBA-A104-41EC-A2F8-8E6C651924EF</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5EEADFBA-A104-41EC-A2F8-8E6C651924EF</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BalaNoTux</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -11,7 +11,7 @@
 // AULA 2 - Passo 18
 // SpriteArray.m e .h
 #import "SpriteArray.h"
-
+#define winSize [CCDirector sharedDirector].winSize
 @interface CamadaAcao : CCLayer 
 { 
     CCLabelBMFont *_titulo1;
