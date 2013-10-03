@@ -601,11 +601,16 @@ float heroiPontosPorSegY;
                     inimigo.visible = NO;
                     
                     switch([inimigo tag]){
+                        //SubBoss
                         case 14:
                             _score+=5;
                             _isSubBossOnStage = NO;
                             _isSubBossDead = YES;
                             break;
+                        //Boss
+                        case 15:
+                            _score+=15;
+                        //Inimigo Comum
                         default:
                             _score++;
                             break;
