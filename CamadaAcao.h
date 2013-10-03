@@ -51,6 +51,8 @@
     CCSprite *_obj1;
     CCSprite *_obj2;
     
+    Boolean _isSubBossOnStage;
+    Boolean _isSubBossDead;
     Boolean _isBossOnStage;
     Boolean _moveUp;
     CCSprite* _boss;
@@ -59,5 +61,10 @@
 
 + (id)scene;
 -(void)configuraJogo;
-
+-(void)adicionaBoss;
+-(void)adicionaSubBoss;
+-(void)adicionaGenericBoss:(float)scale forca:(int)forca tag:(int)tag;
+-(void)adicionaInimigoSimples;
+-(void)criaInimigo:(CCSprite*)inimigo scale:(float)scale forca:(int)forca tag:(int)tag position:(CGPoint)position sequenciaInimigo:(CCSequence*)sequenciaInimigo;
+//-(void)addParticle:(NSString*)image startSize:(float)startSize endSize:(float)endSize speed:(float)speed lifeVar:(float)lifeVar duration:(float)duration position:(CGPoint)position z:(int)z tag:(enum MinhasParticulas)tag;
 @end

@@ -130,11 +130,9 @@ float heroiPontosPorSegY;
     // Sai da funcao se nao estiver morto.
     if (_vidas >0 ) return;
     
+    [self configuraJogo];    
     _isGameActive = TRUE;
-    _vidas = 3;
     heroi.visible = TRUE;
-    _score = 0;
-    forcaInimigo = 0;
     _tituloGameOver.scale = 0;
     _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
 }
@@ -398,6 +396,15 @@ float heroiPontosPorSegY;
 
 -(void)configuraJogo{
     _isBossOnStage = NO;
+    _isSubBossOnStage = NO;
+    _isSubBossDead = NO;
+    _vidas = 3;
+    _score = 0;
+    forcaInimigo = 0;
+    
+    CCSprite *sprite = [inimigosArray bossSprite];
+    sprite.visible = NO;
+
 }
 
 // Inimigo
@@ -405,18 +412,13 @@ float heroiPontosPorSegY;
 - (void)atualizaInimigo:(ccTime)dt {
     if(!_isGameActive) return;
     
-    CGSize winSize = [CCDirector sharedDirector].winSize;    
+    //CGSize winSize = [CCDirector sharedDirector].winSize;
     double curTime = CACurrentMediaTime();
 
-    
     if (curTime > proximoInimigoCria) {
         
         float randSecs = valorRandEntre(0.20, 1.0);
         proximoInimigoCria = randSecs + curTime;
-        
-        float randY = valorRandEntre(0.0, winSize.height);
-        
-        float randDuration = valorRandEntre(2.0, 10.0);
         
         // Versao 2, com Array
         
@@ -424,72 +426,114 @@ float heroiPontosPorSegY;
         // AULA 2 - Passo 22 modifica abordagem v1 pela v2
         //
         
-        // Versao 1, sem Array
-        //CCSprite *inimigo = [CCSprite spriteWithSpriteFrameName:@"flyingtux40.png"];
-        //[batchNode addChild:inimigo];
-        
-        CCSequence *sequenciaInimigo;
-        CCSprite *inimigo;
-        
-        if(_score > -3 && !_isBossOnStage){
-            inimigo = [inimigosArray bossSprite];
-            
-            inimigo.scale = 2.5;
-            forcaInimigo += 5;
-            [inimigo setTag:14];
-            _isBossOnStage = YES;
-            _boss = inimigo;
-            
-            float widthInimigo = inimigo.contentSize.width;
-            
-            inimigo.position = ccp(winSize.width+widthInimigo/2, winSize.height/2);
-            
-            
-            CCMoveBy *movimentoEntrada = [CCMoveBy
-                                          actionWithDuration:2
-                                          position:ccp(-winSize.width/4, 0)];
-            CCCallFuncN *chamaFuncaoMovimento = [CCCallFuncN
-                                                 actionWithTarget:self
-                                                 selector:@selector(movimentoBoss:)];
-            _moveUp = true;
-            sequenciaInimigo = [CCSequence actions: movimentoEntrada, chamaFuncaoMovimento, nil];
-            
-        }else{
-            inimigo = [inimigosArray nextSprite];
-            
-            // Definir tamanho entre um dos 3 tamanhos aleatórios
-            inimigo.position = ccp(winSize.width+inimigo.contentSize.width/2, randY);
-            int randNum = arc4random() % 3;
-            if (randNum == 0) {
-                inimigo.scale = 0.25;
-                forcaInimigo++;
-                [inimigo setTag:10];
-            }
-            else if (randNum == 1)
-            {
-                inimigo.scale = 0.5;
-                forcaInimigo++;
-                [inimigo setTag:11];
-
-            }
-            else
-            {
-                forcaInimigo += 2; // não matar inimigo grande eh vacilo e os outros ficam mais resistentes
-                inimigo.scale = 1.0;
-                [inimigo setTag:12]; // tag 12 inimigo grande
-            }
-            sequenciaInimigo = [CCSequence actions:
-                                    [CCMoveBy actionWithDuration:randDuration
-                                        position:ccp(-winSize.width-inimigo.contentSize.width, 0)],
-                                    [CCCallFuncN actionWithTarget:self                                                        selector:@selector(invisNode:)], nil];
+        //TODO Modificar score para 200
+        if(_score > 5 && !_isSubBossOnStage && !_isSubBossDead){
+            _isSubBossOnStage = YES;
+            [self adicionaSubBoss];
         }
         
-        [inimigo stopAllActions];
-        inimigo.visible = YES;
-        // Movê-lo para fora da tela a esquerda, e quando feito chamar removeNode
-        [inimigo runAction: sequenciaInimigo];
+        //TODO Modificar score para 500
+        if(_score > 12 && _isSubBossDead && !_isBossOnStage){
+            _isBossOnStage = YES;
+            [self adicionaBoss];
+        }
+        
+        if(!_isSubBossOnStage){
+            [self adicionaInimigoSimples];
+        }
     }
 }
+
+-(void)adicionaInimigoSimples{
+    
+    CGSize winSize = [CCDirector sharedDirector].winSize;
+    CCSprite *inimigo = [inimigosArray nextSprite];
+    
+    float randY = valorRandEntre(0.0, winSize.height);    
+    float randDuration = valorRandEntre(2.0, 10.0);
+    float scale = 0;
+    int forca = 0;
+    int tag = 0;
+    
+    // Definir tamanho entre um dos 3 tamanhos aleatórios
+    CGPoint position = ccp(winSize.width+inimigo.contentSize.width/2, randY);
+    int randNum = arc4random() % 3;
+    
+    switch (randNum) {
+        case 0:
+            scale = 0.25;
+            forca=1;
+            break;
+        case 1:
+            scale = 0.5;
+            forca = 1;
+            break;
+        case 2:
+            scale = 1.0;
+            forca = 2;
+            break;
+        default:
+            break;
+    }
+    
+    forca = randNum;
+    tag = 10+randNum;
+    
+    CCSequence *sequenciaInimigo = [CCSequence actions:
+                        [CCMoveBy actionWithDuration:randDuration
+                                            position:ccp(-winSize.width-inimigo.contentSize.width, 0)],
+                        [CCCallFuncN actionWithTarget:self                                                        selector:@selector(invisNode:)], nil];
+    
+    [self criaInimigo:inimigo scale:scale forca:forca tag:tag position:position sequenciaInimigo:sequenciaInimigo];
+    
+}
+
+-(void)adicionaSubBoss{
+    [self adicionaGenericBoss:2.5 forca:30 tag:14];
+}
+
+-(void)adicionaBoss{
+    [self adicionaGenericBoss:5 forca:60 tag:15];
+}
+
+-(void)adicionaGenericBoss:(float)scale forca:(int)forca tag:(int)tag{
+    
+    CCSprite *inimigo = [inimigosArray bossSprite];
+    _boss = inimigo;    
+    
+    CGSize winSize = [CCDirector sharedDirector].winSize;
+    
+    CCMoveBy *movimentoEntrada = [CCMoveBy
+                                  actionWithDuration:2
+                                  position:ccp(-winSize.width/4, 0)];
+    CCCallFuncN *chamaFuncaoMovimento = [CCCallFuncN
+                                         actionWithTarget:self
+                                         selector:@selector(movimentoBoss:)];
+    _moveUp = true;
+
+    float widthInimigo = inimigo.contentSize.width;
+    
+    CGPoint position = ccp(winSize.width+widthInimigo/2, winSize.height/2);
+    
+    CCSequence *sequenciaInimigo = [CCSequence actions: movimentoEntrada, chamaFuncaoMovimento, nil];
+    
+    [self criaInimigo:inimigo scale:scale forca:forca tag:tag position:position sequenciaInimigo:sequenciaInimigo];
+    
+}
+
+-(void)criaInimigo:(CCSprite*)inimigo scale:(float)scale forca:(int)forca tag:(int)tag position:(CGPoint)position sequenciaInimigo:(CCSequence*)sequenciaInimigo {
+    
+    inimigo.scale = scale;
+    forcaInimigo += forca;
+    [inimigo setTag:tag];
+
+    inimigo.position = position;    
+    
+    [inimigo stopAllActions];
+    inimigo.visible = YES;
+    [inimigo runAction: sequenciaInimigo];
+}
+
 //Movimento de para cima e para baixo do Boss
 -(void)movimentoBoss:(CCNode *)sender{
     
@@ -548,8 +592,6 @@ float heroiPontosPorSegY;
                         break;
                 }
                 
-                
-                
                 // Não permite inimigo acumular MUITA fraqueza senao o game fica chato
                 if (forcaInimigo < -11)
                     forcaInimigo = 0;
@@ -557,7 +599,18 @@ float heroiPontosPorSegY;
                 // Ponto somente pra inimigos sem vida.
                 if (forcaInimigo < 1) {
                     inimigo.visible = NO;
-                    _score++;
+                    
+                    switch([inimigo tag]){
+                        case 14:
+                            _score+=5;
+                            _isSubBossOnStage = NO;
+                            _isSubBossDead = YES;
+                            break;
+                        default:
+                            _score++;
+                            break;
+                    }
+                    
                 }
                     bala.visible = NO;
                 
@@ -581,7 +634,9 @@ float heroiPontosPorSegY;
                     particula.position = inimigo.position;
                     
                     [self addChild:particula z:10 tag:particulaAcertouInimigo];
-                    
+                
+                    //[self addParticle:@"fire.png" startSize:5.0f endSize:10.0f speed:100 lifeVar:0.5f duration:1.5f position:inimigo.position z:10 tag:particulaAcertouInimigo];
+                
                     break;
             } else
                     matouInimigo = TRUE;
@@ -610,6 +665,8 @@ float heroiPontosPorSegY;
             
             [self addChild:particula z:10 tag:particulaAcertouHeroi];
             
+            //[self addParticle:@"fire.png" startSize:10.0f endSize:40.0f speed:200 lifeVar:0.5f duration:0.5f position:heroi.position z:10 tag:particulaAcertouHeroi];
+            
             _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
             if(_vidas < 1)
             {
@@ -625,6 +682,24 @@ float heroiPontosPorSegY;
             break;
         }
     }
+    
+}
+
+-(void)addParticle:(NSString*)image startSize:(float)startSize endSize:(float)endSize speed:(float)speed lifeVar:(float)lifeVar duration:(float)duration position:(CGPoint)position z:(int)z tag:(enum MinhasParticulas)tag{
+    
+    CCParticleSystem *particula = [CCParticleFire node];
+    
+    particula.texture = [[CCTextureCache sharedTextureCache] addImage:image];
+    
+    particula.startSize = startSize;
+    particula.endSize = endSize;
+    particula.speed = speed;
+    particula.lifeVar = lifeVar;
+    particula.duration = duration;
+    
+    particula.position = position;
+    
+    [self addChild:particula z:z tag:tag];
     
 }
 
