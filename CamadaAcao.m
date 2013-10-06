@@ -44,7 +44,7 @@ double factorScale = 1.0;
 
 // SOM
 - (void)poeSom { 
-    //[[SimpleAudioEngine sharedEngine] playBackgroundMusic:@"patrick_soundtrack.mp3" loop:YES]; 
+    [[SimpleAudioEngine sharedEngine] playBackgroundMusic:@"patrick_soundtrack.mp3" loop:YES]; 
     
     // preload dos proximos sons
     [[SimpleAudioEngine sharedEngine] preloadEffect:@"som_exemplo.mp3"];
