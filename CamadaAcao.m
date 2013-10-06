@@ -333,7 +333,9 @@ double factorScale = 1.0;
     } else {
         _obj1 = [CCSprite spriteWithFile:@"SGallego_Rio.jpg"];
         _obj2 = [CCSprite spriteWithFile:@"nuvem.gif"];
-    
+
+        _obj1.scaleX = 2.0;
+        _obj1.scaleY = 1.0;
         _obj2.scaleX = factorScale;
         _obj2.scaleY = factorScale;
     }
