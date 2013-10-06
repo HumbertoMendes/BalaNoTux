@@ -137,6 +137,7 @@ double factorScale = 1.0;
     _isGameActive = TRUE;
     heroi.visible = TRUE;
     _tituloGameOver.scale = 0;
+    clickRestart.scale = 0;
     _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
 }
 
@@ -258,18 +259,19 @@ double factorScale = 1.0;
     _tituloGameOver = [CCLabelBMFont labelWithString:@"Restart" fntFile:fontName];
     _tituloGameOver.scale = 0; // Game Over fica invisivel
         
-    CCMenuItemLabel *itemRestart;
-    itemRestart = [CCMenuItemLabel itemWithLabel:_tituloGameOver
+    //CCMenuItemLabel *itemRestart;
+    clickRestart = [CCMenuItemLabel itemWithLabel:_tituloGameOver
                         target:self selector:@selector(apertouRestart:)];
+    clickRestart.scale = 0;
     
     
-    [itemRestart setPosition:ccp(winSize.width, winSize.height/2)];
+    [clickRestart setPosition:ccp(winSize.width, winSize.height/2)];
     
     CGSize NovoTamanho = CGSizeMake(winSize.width, 100);
     // Vamos ;tentar corrigir o tamanho da area do click do menu...
-    [itemRestart setContentSize:NovoTamanho];
+    [clickRestart setContentSize:NovoTamanho];
     
-    CCMenu *menuOver = [CCMenu menuWithItems:itemRestart, nil];
+    CCMenu *menuOver = [CCMenu menuWithItems:clickRestart, nil];
     [menuOver setPosition:CGPointZero];
     [self addChild:menuOver];
     
@@ -716,6 +718,7 @@ double factorScale = 1.0;
             if(_vidas < 1)
             {
                 _tituloGameOver.scale = 2 * factorScale;
+                clickRestart.scale = 2 * factorScale;
                 _isGameActive = false;
                 heroi.visible = false;
                 
@@ -890,10 +893,10 @@ double factorScale = 1.0;
     touchLocation = [[CCDirector sharedDirector] convertToGL: touchLocation];
     touchLocation = [self convertToNodeSpace:touchLocation];
     
-    //NSLog(@"X: %f, Y: %f", touchLocation.x, touchLocation.y);
+//    NSLog(@"X: %f, Y: %f", touchLocation.x, touchLocation.y);
     
     if(!heroi) return;
-    if((!heroi) || (touchLocation.x < 128)) return;
+    if((!heroi) || (touchLocation.x < 128 * factorScale)) return;
     
     
     
