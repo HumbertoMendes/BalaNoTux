@@ -718,7 +718,7 @@ double factorScale = 1.0;
             if(_vidas < 1)
             {
                 _tituloGameOver.scale = 2 * factorScale;
-                clickRestart.scale = 2 * factorScale;
+                clickRestart.scale = 1;
                 _isGameActive = false;
                 heroi.visible = false;
                 
