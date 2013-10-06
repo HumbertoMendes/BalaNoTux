@@ -32,6 +32,9 @@ enum Personagens {
 // AULA 2 - Passo 2
 float heroiPontosPorSegY;
 
+//Fator de scale para criacao dos objetos
+double factorScale = 1.0;
+
 + (id)scene {
     CCScene *cena = [CCScene node];
     CamadaAcao *camada = [CamadaAcao node]; 
@@ -77,7 +80,7 @@ float heroiPontosPorSegY;
     chovechuva.position = ccp( p.x, p.y);
     chovechuva.life = 4;
     chovechuva.texture = [[CCTextureCache sharedTextureCache] addImage: @"gotaChuva.png"];
-    chovechuva.startSize = 10.0f;
+    chovechuva.startSize = 10.0f * factorScale;
     
     [self addChild: chovechuva z:10];
 
@@ -91,6 +94,8 @@ float heroiPontosPorSegY;
 // Lança e inicia (spawn) o protagonista adicionando um sprite dele no jogo
 - (void)poeProtagonista {
     heroi = [CCSprite spriteWithSpriteFrameName:@"beastie-down40.png"];
+    heroi.scaleY = 1.0 * factorScale;
+    heroi.scaleX = 1.0 * factorScale;
     heroi.position = ccp(-heroi.contentSize.width/2,
                         winSize.height * 0.5);
     [batchNode addChild:heroi z:1 tag:heroiTag];
@@ -155,17 +160,16 @@ float heroiPontosPorSegY;
     // Adicionamos o protagonista na cena...
     [self poeProtagonista];
     
-    
     _vidas = 3;
     _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
-    _vidasLabel.scale = 1.5;
+    _vidasLabel.scale = 1.5 * factorScale;
 
     _score = 0;
     _scoreLabel.string = [NSString stringWithFormat:@"Score: %d", _score];
-    _scoreLabel.scale = 1.5;
+    _scoreLabel.scale = 1.5 * factorScale;
     
     _forcaInimigoLabel.string = [NSString stringWithFormat:@"Resist: %d", forcaInimigo];
-    _forcaInimigoLabel.scale = 1.5;
+    _forcaInimigoLabel.scale = 1.5 * factorScale;
 
     _isGameActive = true;
 }
@@ -189,7 +193,7 @@ float heroiPontosPorSegY;
     [_titulo1 runAction:
      [CCSequence actions:
       [CCDelayTime actionWithDuration:1.0],
-      [CCScaleTo actionWithDuration:1.0 scale:2.5],
+      [CCScaleTo actionWithDuration:1.0 scale:2.5 * factorScale],
       nil]];
     
     _titulo2 = [CCLabelBMFont labelWithString:@"Bala no TuX!" fntFile:fontName];
@@ -206,7 +210,7 @@ float heroiPontosPorSegY;
     [_titulo2 runAction:
      [CCSequence actions:
       [CCDelayTime actionWithDuration:1.0],
-      [CCScaleTo actionWithDuration:1.0 scale:3.5],
+      [CCScaleTo actionWithDuration:1.0 scale:3.5 * factorScale],
       nil]];
     
     // titulo Inicio
@@ -227,7 +231,7 @@ float heroiPontosPorSegY;
      [CCSequence actions:
       [CCDelayTime actionWithDuration:2.0],
       [CCEaseOut actionWithAction:
-       [CCScaleTo actionWithDuration:0.5 scale:2.5] rate:4.0],
+       [CCScaleTo actionWithDuration:0.5 scale:2.5 * factorScale] rate:4.0],
       nil]];
     
     
@@ -330,6 +334,8 @@ float heroiPontosPorSegY;
         _obj1 = [CCSprite spriteWithFile:@"SGallego_Rio.jpg"];
         _obj2 = [CCSprite spriteWithFile:@"nuvem.gif"];
     
+        _obj2.scaleX = factorScale;
+        _obj2.scaleY = factorScale;
     }
     
     // 3 passo determinar a velocidade relativa do bg
@@ -396,6 +402,11 @@ float heroiPontosPorSegY;
     _vidas = 3;
     _score = 0;
     forcaInimigo = 0;
+
+    //Verifica se é um telefone para diminuir o tamanho dos objetos pela metade
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        factorScale = 0.5;
+    }
     
     CCSprite *sprite = [inimigosArray bossSprite];
     sprite.visible = NO;
@@ -454,15 +465,15 @@ float heroiPontosPorSegY;
     
     switch (randNum) {
         case 0:
-            scale = 0.25;
+            scale = 0.25 * factorScale;
             forca=1;
             break;
         case 1:
-            scale = 0.5;
+            scale = 0.5 * factorScale;
             forca = 1;
             break;
         case 2:
-            scale = 1.0;
+            scale = 1.0 * factorScale;
             forca = 2;
             break;
         default:
@@ -482,11 +493,11 @@ float heroiPontosPorSegY;
 }
 
 -(void)adicionaSubBoss{
-    [self adicionaGenericBoss:2.5 forca:30 tag:14];
+    [self adicionaGenericBoss:2.5 * factorScale forca:30 tag:14];
 }
 
 -(void)adicionaBoss{
-    [self adicionaGenericBoss:5 forca:60 tag:15];
+    [self adicionaGenericBoss:5 * factorScale forca:60 tag:15];
 }
 
 -(void)adicionaGenericBoss:(float)scale forca:(int)forca tag:(int)tag{
@@ -664,7 +675,7 @@ float heroiPontosPorSegY;
             _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
             if(_vidas < 1)
             {
-                _tituloGameOver.scale = 2;
+                _tituloGameOver.scale = 2 * factorScale;
                 _isGameActive = false;
                 heroi.visible = false;
                 
@@ -857,6 +868,8 @@ float heroiPontosPorSegY;
                                 ccp(bala.contentSize.width/2, 0));
     
     [bala setTag:20]; // marcando bala com tag 20 pra identificar no sender
+    bala.scaleY = 1.0 * factorScale;
+    bala.scaleX = 1.0 * factorScale;
     [bala runAction:
      [CCSequence actions:
       [CCMoveBy actionWithDuration:0.5
