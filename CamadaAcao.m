@@ -309,11 +309,11 @@ double factorScale = 1.0;
 }
 
 - (void)colocaBatchNode {
-    NSString *spritesImg = @"spriteSheet.png";
-    NSString *spritesPlist = @"spriteSheet.plist";
+    NSString *spritesImg = @"sprite_.png";
+    NSString *spritesPlist = @"sprite_.plist";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        spritesImg = @"spriteSheet.png";
-        spritesPlist = @"spriteSheet.plist";
+        spritesImg = @"sprite_.png";
+        spritesPlist = @"sprite_.plist";
         // deveria ser um arquivo de High Definition (-hd)
     }
     batchNode = [CCSpriteBatchNode batchNodeWithFile:spritesImg];
@@ -327,11 +327,16 @@ double factorScale = 1.0;
 // AULA 2 - Passo 20
 - (void)setupArrays {
     inimigosArray = [[SpriteArray alloc] initWithCapacity:15
-                                           spriteFrameName:@"flyingtux40.png" 
+                                          spriteFrameName:[NSArray arrayWithObjects:
+                                                           @"flyingtux40.png",
+                                                           @"pengu40.png",
+                                                           nil]
                                                  batchNode:batchNode];
     // Aula 2 - Passo 27
     balaArray = [[SpriteArray alloc] initWithCapacity:5
-                                       spriteFrameName:@"logo.png" 
+                                      spriteFrameName:[NSArray arrayWithObjects:
+                                                       @"logo.png",
+                                                       nil]
                                              batchNode:batchNode];
 }
 
@@ -510,8 +515,10 @@ double factorScale = 1.0;
         default:
             break;
     }
-    
-    forca = randNum;
+
+    NSNumber * forcaPorTipoPersonagem = [inimigosArray currentItemForce];
+    int intForcaPorPersonagem = [forcaPorTipoPersonagem  intValue];
+    forca = randNum + intForcaPorPersonagem;
     tag = 10+randNum;
     
     CCSequence *sequenciaInimigo = [CCSequence actions:
@@ -524,16 +531,17 @@ double factorScale = 1.0;
 }
 
 -(void)adicionaSubBoss{
-    [self adicionaGenericBoss:2.5 * factorScale forca:30 tag:14];
+    CCSprite *inimigo = [inimigosArray subBossSprite];
+    [self adicionaGenericBoss:inimigo scale: 2.5 * factorScale forca:30 tag:14];
 }
 
 -(void)adicionaBoss{
-    [self adicionaGenericBoss:5 * factorScale forca:60 tag:15];
+    CCSprite *inimigo = [inimigosArray bossSprite];
+    [self adicionaGenericBoss:inimigo scale: 5 * factorScale forca:60 tag:15];
 }
 
--(void)adicionaGenericBoss:(float)scale forca:(int)forca tag:(int)tag{
+-(void)adicionaGenericBoss:(CCSprite*)inimigo scale:(float)scale forca:(int)forca tag:(int)tag{
     
-    CCSprite *inimigo = [inimigosArray bossSprite];
     _boss = inimigo;    
     
     CCMoveBy *movimentoEntrada = [CCMoveBy

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2CC80C111801CB3C00D188A5 /* sprite_.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2CC80C0F1801CB3C00D188A5 /* sprite_.plist */; };
+		2CC80C121801CB3C00D188A5 /* sprite_.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CC80C101801CB3C00D188A5 /* sprite_.png */; };
 		6EA14ABC1672B3D400109F7B /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = 6EA14ABB1672B3D400109F7B /* fire.png */; };
 		845D0199148D72410035B8F9 /* SGallego_Rio.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 845D0198148D72410035B8F9 /* SGallego_Rio.jpg */; };
 		845D019C148D72900035B8F9 /* nuvem.gif in Resources */ = {isa = PBXBuildFile; fileRef = 845D019B148D72900035B8F9 /* nuvem.gif */; };
@@ -184,6 +186,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2CC80C0F1801CB3C00D188A5 /* sprite_.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = sprite_.plist; sourceTree = "<group>"; };
+		2CC80C101801CB3C00D188A5 /* sprite_.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_.png; sourceTree = "<group>"; };
 		6EA14ABB1672B3D400109F7B /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fire.png; sourceTree = "<group>"; };
 		845D0198148D72410035B8F9 /* SGallego_Rio.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SGallego_Rio.jpg; sourceTree = "<group>"; };
 		845D019B148D72900035B8F9 /* nuvem.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = nuvem.gif; sourceTree = "<group>"; };
@@ -564,6 +568,8 @@
 		845D01A2148D779C0035B8F9 /* Spritesheets */ = {
 			isa = PBXGroup;
 			children = (
+				2CC80C0F1801CB3C00D188A5 /* sprite_.plist */,
+				2CC80C101801CB3C00D188A5 /* sprite_.png */,
 				DF767FFB147FF0DC007B8394 /* spriteSheet.plist */,
 				DF767FFC147FF0DC007B8394 /* spriteSheet.png */,
 			);
@@ -1179,6 +1185,8 @@
 				6EA14ABC1672B3D400109F7B /* fire.png in Resources */,
 				DF114E3917D2B21200753932 /* SGallego_Italy.jpg in Resources */,
 				DF114E3A17D2B21200753932 /* SGallego_Malibu.jpg in Resources */,
+				2CC80C111801CB3C00D188A5 /* sprite_.plist in Resources */,
+				2CC80C121801CB3C00D188A5 /* sprite_.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
