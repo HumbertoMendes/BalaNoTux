@@ -17,6 +17,7 @@
     CCLabelBMFont *_titulo1;
     CCLabelBMFont *_titulo2;
     CCLabelBMFont *_tituloGameOver;
+    CCLabelBMFont *_labelLevel;
 
     NSInteger _vidas, forcaInimigo;
     CCLabelBMFont *_vidasLabel;

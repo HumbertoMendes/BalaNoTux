@@ -283,6 +283,31 @@ double factorScale = 1.0;
 
 }
 
+-(void) exibeLabelLevel:(int) level {
+    NSString * texto = [NSString stringWithFormat:@"Level %d", level];
+    
+    NSString *fontName = @"fonteCasual.fnt";
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        fontName = @"fonteCasual-hd.fnt";
+    }
+    _labelLevel = [CCLabelBMFont labelWithString:texto fntFile:fontName];
+    // efeitos
+    _labelLevel.scale = 0;
+    
+    //_titulo1.scale = 0.5;
+    _labelLevel.position = ccp(winSize.width/2, winSize.height/2);
+    [self addChild:_labelLevel z:100];
+    
+    // efeitos
+    [_labelLevel runAction:
+     [CCSequence actions:
+      [CCDelayTime actionWithDuration:1.0],
+      [CCScaleTo actionWithDuration:1.0 scale:2.5 * factorScale],
+      [CCDelayTime actionWithDuration:3.0],
+      [CCScaleTo actionWithDuration:1.0 scale:0],
+      nil]];
+}
+
 - (void)colocaBatchNode {
     NSString *spritesImg = @"spriteSheet.png";
     NSString *spritesPlist = @"spriteSheet.plist";
@@ -311,7 +336,7 @@ double factorScale = 1.0;
 }
 
 // AULA 4
-- (void)poeBackground {
+- (void)poeBackgroundImg:(NSString *) fileName {
     _vidas = 1; // Quando apertar Inicio ou Restart tera 3 vidas
     
     // Passo 1, criamos o CCParallaxNode
@@ -324,14 +349,14 @@ double factorScale = 1.0;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         // Colocar nos objets parallax variasveis com arquivo
         // imagem, como eh iPad, HD
-        _obj1 = [CCSprite spriteWithFile:@"SGallego_Rio.jpg"];
+        _obj1 = [CCSprite spriteWithFile:fileName];
         _obj2 = [CCSprite spriteWithFile:@"nuvem.gif"];
         
         _obj1.scaleX = 4.0;
         _obj1.scaleY = 2.0;
         
     } else {
-        _obj1 = [CCSprite spriteWithFile:@"SGallego_Rio.jpg"];
+        _obj1 = [CCSprite spriteWithFile:fileName];
         _obj2 = [CCSprite spriteWithFile:@"nuvem.gif"];
 
         _obj1.scaleX = 2.0;
@@ -350,6 +375,10 @@ double factorScale = 1.0;
     // E agora mesma coisa no objeto1
     [_backgroundGame addChild:_obj1 z:-1 parallaxRatio:velocidadeBg positionOffset:ccp(0,winSize.height/2)];
     
+}
+- (void)trocaBackgroundImg:(NSString*) fileName {
+    [_backgroundGame removeAllChildrenWithCleanup:true];
+    [self poeBackgroundImg:fileName];
 }
 
 /*
@@ -391,7 +420,7 @@ double factorScale = 1.0;
         [self setIsTouchEnabled:YES];
         
         // AULA 4 - Coloca o Parallax Bg
-        [self poeBackground];
+        [self poeBackgroundImg:@"SGallego_Rio.jpg"];
 
     }
     return self;
@@ -608,10 +637,23 @@ double factorScale = 1.0;
                             _score+=5;
                             _isSubBossOnStage = NO;
                             _isSubBossDead = YES;
+                            [self addParticle:@"fire.png" startSize:5.0f endSize:40.0f speed:100 lifeVar:0.5f duration:3.0f position:inimigo.position z:9 tag:particulaAcertouInimigo];
+                            [[SimpleAudioEngine sharedEngine] playEffect:@"morrendo.mp3"
+                                                                   pitch:1.0f
+                                                                     pan:0.0f
+                                                                    gain:5.25f];
                             break;
                         //Boss
                         case 15:
                             _score+=15;
+                            [self trocaBackgroundImg:@"SGallego_Malibu.jpg"];
+                            [self exibeLabelLevel:2];
+                            [self addParticle:@"fire.png" startSize:5.0f endSize:40.0f speed:100 lifeVar:0.5f duration:3.0f position:inimigo.position z:9 tag:particulaAcertouInimigo];
+                            [[SimpleAudioEngine sharedEngine] playEffect:@"morrendo.mp3"
+                                                                   pitch:1.0f
+                                                                     pan:0.0f
+                                                                    gain:5.25f];
+                            break;
                         //Inimigo Comum
                         default:
                             _score++;
@@ -629,20 +671,7 @@ double factorScale = 1.0;
                     // Vamos mostrar a resistencia do inimigo
                     _forcaInimigoLabel.string = [NSString stringWithFormat:@"Resist: %d", forcaInimigo];
                 
-                    CCParticleSystem *particula = [CCParticleFire node];
-                    particula.texture = [[CCTextureCache sharedTextureCache] addImage:@"fire.png"];
-                    
-                    particula.startSize = 5.0f;
-                    particula.endSize = 10.0f;
-                    particula.speed = 100;
-                    particula.lifeVar = 0.5f;
-                    particula.duration = 1.5f;
-                    
-                    particula.position = inimigo.position;
-                    
-                    [self addChild:particula z:10 tag:particulaAcertouInimigo];
-                
-                    //[self addParticle:@"fire.png" startSize:5.0f endSize:10.0f speed:100 lifeVar:0.5f duration:1.5f position:inimigo.position z:10 tag:particulaAcertouInimigo];
+                    [self addParticle:@"fire.png" startSize:5.0f endSize:10.0f speed:100 lifeVar:0.5f duration:1.5f position:inimigo.position z:10 tag:particulaAcertouInimigo];
                 
                     break;
             } else
