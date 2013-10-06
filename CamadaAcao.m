@@ -654,6 +654,7 @@ double factorScale = 1.0;
                         //Boss
                         case 15:
                             _score+=15;
+                            _isBossOnStage = NO;
                             [self trocaBackgroundImg:@"SGallego_Malibu.jpg"];
                             [self exibeLabelLevel:2];
                             [self addParticle:@"fire.png" startSize:5.0f endSize:40.0f speed:100 lifeVar:0.5f duration:3.0f position:inimigo.position z:9 tag:particulaAcertouInimigo];
