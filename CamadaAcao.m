@@ -93,7 +93,17 @@ double factorScale = 1.0;
 
 // Lança e inicia (spawn) o protagonista adicionando um sprite dele no jogo
 - (void)poeProtagonista {
-    heroi = [CCSprite spriteWithSpriteFrameName:@"beastie-down40.png"];
+    //0 = Beastie
+    //1 = Hexley
+    if (playerGame == 0) {
+        heroi = [CCSprite spriteWithSpriteFrameName:@"beastie-down40.png"];
+    }
+    else
+    {
+        heroi = [CCSprite spriteWithSpriteFrameName:@"hexley40.png"];
+        heroi.flipX = YES;
+    }
+    
     heroi.scaleY = 1.0 * factorScale;
     heroi.scaleX = 1.0 * factorScale;
     heroi.position = ccp(-heroi.contentSize.width/2,
@@ -113,16 +123,19 @@ double factorScale = 1.0;
       nil]];
   
     // Anima o protagonista
-    CCSpriteFrameCache * cache = [CCSpriteFrameCache sharedSpriteFrameCache];
-    CCAnimation *andaHeroi = [CCAnimation animation];
-    [andaHeroi addFrame:
-     [cache spriteFrameByName:@"beastie-down40.png"]];
-    [andaHeroi addFrame:
-     [cache spriteFrameByName:@"beastie-up40.png"]];
-    [andaHeroi setDelay:0.2];
-    [heroi runAction:
-     [CCRepeatForever actionWithAction:
-      [CCAnimate actionWithAnimation:andaHeroi]]];
+    if(playerGame == 0)
+    {
+        CCSpriteFrameCache * cache = [CCSpriteFrameCache sharedSpriteFrameCache];
+        CCAnimation *andaHeroi = [CCAnimation animation];
+        [andaHeroi addFrame:
+         [cache spriteFrameByName:@"beastie-down40.png"]];
+        [andaHeroi addFrame:
+         [cache spriteFrameByName:@"beastie-up40.png"]];
+        [andaHeroi setDelay:0.2];
+        [heroi runAction:
+         [CCRepeatForever actionWithAction:
+          [CCAnimate actionWithAnimation:andaHeroi]]];
+    }
     
     
 }
@@ -144,7 +157,7 @@ double factorScale = 1.0;
 // Inicio
 - (void)apertouInicio:(id)sender {
     [[SimpleAudioEngine sharedEngine] playEffect:@"powerup.caf"];
-    NSArray * nodes = [NSArray arrayWithObjects:_titulo1, _titulo2, clickInicio,
+    NSArray * nodes = [NSArray arrayWithObjects:_titulo1, _titulo2, clickInicio,jogarBeastie,jogarHexley,
                        nil];
     for (CCNode *node in nodes) {
         [node runAction:
@@ -176,6 +189,10 @@ double factorScale = 1.0;
 }
 
 - (void)poeTitulo {
+    
+    //0 = Beastie
+    //1 = Hexley
+    playerGame = 0;
     
     NSString *fontName = @"fonteCasual.fnt";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -216,13 +233,14 @@ double factorScale = 1.0;
     
     // titulo Inicio
     CCLabelBMFont *playLabel = [CCLabelBMFont labelWithString:@"Iniciar" fntFile:fontName];
+    
     clickInicio = [CCMenuItemLabel itemWithLabel:playLabel 
                                        target:self
                                      selector:@selector(apertouInicio:)];
     [clickInicio setScale:0];
     
     [clickInicio setPosition:ccp(winSize.width/2, winSize.height * 0.3)];
-
+    
     CCMenu *menu = [CCMenu menuWithItems:clickInicio, nil];
     [menu setPosition:CGPointZero];
     //menu.position = CGPointZero;
@@ -233,6 +251,45 @@ double factorScale = 1.0;
       [CCDelayTime actionWithDuration:2.0],
       [CCEaseOut actionWithAction:
        [CCScaleTo actionWithDuration:0.5 scale:2.5 * factorScale] rate:4.0],
+      nil]];
+    
+    
+    CCLabelBMFont *playBeastie = [CCLabelBMFont labelWithString:@"Jogar com Beastie" fntFile:fontName];
+    
+    jogarBeastie = [CCMenuItemLabel itemWithLabel:playBeastie
+                                          target:self
+                                        selector:@selector(jogarBestie:)];
+    [jogarBeastie setScale:0];
+    
+    [jogarBeastie setPosition:ccp(winSize.width/6, winSize.height * 0.15)];
+    
+    
+    CCLabelBMFont *playHexley = [CCLabelBMFont labelWithString:@"Jogar com Hexley" fntFile:fontName];
+    
+    jogarHexley = [CCMenuItemLabel itemWithLabel:playHexley
+                                          target:self
+                                        selector:@selector(jogarHexley:)];
+    [jogarHexley setScale:0];
+    
+    [jogarHexley setPosition:ccp(winSize.width/6, winSize.height * 0.1)];
+    
+    CCMenu *menuPlayer = [CCMenu menuWithItems:jogarBeastie,jogarHexley, nil];
+    [menuPlayer setPosition:CGPointZero];
+    //menu.position = CGPointZero;
+    [self addChild:menuPlayer];
+    
+    [jogarBeastie runAction:
+     [CCSequence actions:
+      [CCDelayTime actionWithDuration:2.0],
+      [CCEaseOut actionWithAction:
+       [CCScaleTo actionWithDuration:0.5 scale:1 * factorScale] rate:4.0],
+      nil]];
+    
+    [jogarHexley runAction:
+     [CCSequence actions:
+      [CCDelayTime actionWithDuration:2.0],
+      [CCEaseOut actionWithAction:
+       [CCScaleTo actionWithDuration:0.5 scale:1 * factorScale] rate:4.0],
       nil]];
     
     
@@ -334,6 +391,7 @@ double factorScale = 1.0;
                                                            @"pengu40.png",
                                                            nil]
                                                  batchNode:batchNode];
+    
     // Aula 2 - Passo 27
     balaArray = [[SpriteArray alloc] initWithCapacity:5
                                       spriteFrameName:[NSArray arrayWithObjects:
@@ -774,6 +832,7 @@ double factorScale = 1.0;
             -(background.contentSize.width*background.scaleX/2 - winSize.width) ) {
             [_backgroundGame incrementOffset:ccp(2500,0) forChild:background];
         }
+        
     }
 }
 
@@ -922,7 +981,15 @@ double factorScale = 1.0;
       nil]];
 }
 
+-(void)jogarBestie:(id)sender
+{
+    playerGame = 0;
+}
 
+-(void)jogarHexley:(id)sender
+{
+    playerGame = 1;
+}
 
 // Desaloca memoria
 // AULA 2 - Passo 25 dealloc de super e o que mais for preciso
