@@ -296,7 +296,7 @@ double factorScale = 1.0;
     // Vidas
     _vidasLabel = [CCLabelBMFont labelWithString:@"Vidas: x" fntFile:fontName];
     _vidasLabel.scale = 0;
-    _vidasLabel.position = ccp(winSize.width/8, winSize.height * 0.95);
+    _vidasLabel.position = ccp(winSize.width*0.1, winSize.height * 0.85);
     [self addChild:_vidasLabel z:100];
 
     // Score
