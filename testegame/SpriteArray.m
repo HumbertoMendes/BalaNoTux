@@ -11,23 +11,44 @@
 
 @implementation SpriteArray
 @synthesize array = array;
+@synthesize resistencia = resistencia;
+
 
 // AULA 2 - Passo 15
 
--(id)initWithCapacity:(int)capacity spriteFrameName:(NSString *)spriteFrameName batchNode:(CCSpriteBatchNode *)batchNode {
+-(id)initWithCapacity:(int)capacity spriteFrameName:(NSArray *)spritesFrameName batchNode:(CCSpriteBatchNode *)batchNode {
     
     //Adicionando um frame a mais para os chefões.
-    capacity++;
+    capacity += 2;
     
+    int quantidadeSprites = [spritesFrameName count];
+
     if ((self = [super init])) {
         
         array = [[CCArray alloc] initWithCapacity:capacity];
-        for(int i = 0; i < capacity; ++i) {            
+        resistencia = [[CCArray alloc] initWithCapacity:capacity];
+        for(int i = 0; i < capacity; ++i) {
+            int random = arc4random();
+            random = random < 0 ? 0 : random;
+            int indiceRandomico = random % quantidadeSprites;
+            if (i == capacity -2) {
+                //sub boss sempre vai ser o mesmo personagem
+                indiceRandomico = 0;
+            }
+            if (quantidadeSprites > 1 && i == capacity -1) {
+                //boss sempre vai ser o mesmo personagem
+                indiceRandomico = 1;
+            }
+            NSLog(@"Array qrde: %d random: %d indiceRandomigo: %d", quantidadeSprites, random, indiceRandomico);
             CCSprite *sprite = [CCSprite
-                                spriteWithSpriteFrameName:spriteFrameName]; 
+                                spriteWithSpriteFrameName:[spritesFrameName objectAtIndex:indiceRandomico]];
             sprite.visible = NO; 
             [batchNode addChild:sprite]; 
-            [array addObject:sprite];            
+            [array addObject:sprite];
+
+            //segundo tipo de inimigo deve ser mais forte
+            int resis = 10 * indiceRandomico;
+            [resistencia addObject: [NSNumber numberWithInt:resis]];
         }
         
     }
@@ -44,9 +65,18 @@
     return retval;
 }
 
+-(int) currentItemForce {
+    return [resistencia objectAtIndex: nextItem];
+}
+
 -(id)bossSprite{
     //Último array é do boss
     return [array objectAtIndex:array.count-1];
+}
+
+-(id)subBossSprite{
+    //Último array é do boss
+    return [array objectAtIndex:array.count-2];
 }
 
 // AULA 2 - Passo 17

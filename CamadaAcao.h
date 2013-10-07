@@ -13,10 +13,14 @@
 #import "SpriteArray.h"
 #define winSize [CCDirector sharedDirector].winSize
 @interface CamadaAcao : CCLayer 
-{ 
+{
+    
+    int playerGame;
+    
     CCLabelBMFont *_titulo1;
     CCLabelBMFont *_titulo2;
     CCLabelBMFont *_tituloGameOver;
+    CCLabelBMFont *_labelLevel;
 
     NSInteger _vidas, forcaInimigo;
     CCLabelBMFont *_vidasLabel;
@@ -28,7 +32,7 @@
     CCLabelBMFont *_forcaInimigoLabel;
     
     // Titulo Inicio
-    CCMenuItemLabel *clickInicio, *clickRestart;
+    CCMenuItemLabel *clickInicio, *clickRestart, *jogarBeastie, *jogarHexley;
     
     // Spritesheet do jogo
     CCSpriteBatchNode * batchNode; 

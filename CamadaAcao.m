@@ -32,6 +32,9 @@ enum Personagens {
 // AULA 2 - Passo 2
 float heroiPontosPorSegY;
 
+//Fator de scale para criacao dos objetos
+double factorScale = 1.0;
+
 + (id)scene {
     CCScene *cena = [CCScene node];
     CamadaAcao *camada = [CamadaAcao node]; 
@@ -41,7 +44,7 @@ float heroiPontosPorSegY;
 
 // SOM
 - (void)poeSom { 
-    //[[SimpleAudioEngine sharedEngine] playBackgroundMusic:@"patrick_soundtrack.mp3" loop:YES]; 
+    [[SimpleAudioEngine sharedEngine] playBackgroundMusic:@"patrick_soundtrack.mp3" loop:YES]; 
     
     // preload dos proximos sons
     [[SimpleAudioEngine sharedEngine] preloadEffect:@"som_exemplo.mp3"];
@@ -77,7 +80,7 @@ float heroiPontosPorSegY;
     chovechuva.position = ccp( p.x, p.y);
     chovechuva.life = 4;
     chovechuva.texture = [[CCTextureCache sharedTextureCache] addImage: @"gotaChuva.png"];
-    chovechuva.startSize = 10.0f;
+    chovechuva.startSize = 10.0f * factorScale;
     
     [self addChild: chovechuva z:10];
 
@@ -90,7 +93,19 @@ float heroiPontosPorSegY;
 
 // Lança e inicia (spawn) o protagonista adicionando um sprite dele no jogo
 - (void)poeProtagonista {
-    heroi = [CCSprite spriteWithSpriteFrameName:@"beastie-down40.png"];
+    //0 = Beastie
+    //1 = Hexley
+    if (playerGame == 0) {
+        heroi = [CCSprite spriteWithSpriteFrameName:@"beastie-down40.png"];
+    }
+    else
+    {
+        heroi = [CCSprite spriteWithSpriteFrameName:@"hexley40.png"];
+        heroi.flipX = YES;
+    }
+    
+    heroi.scaleY = 1.0 * factorScale;
+    heroi.scaleX = 1.0 * factorScale;
     heroi.position = ccp(-heroi.contentSize.width/2,
                         winSize.height * 0.5);
     [batchNode addChild:heroi z:1 tag:heroiTag];
@@ -108,16 +123,19 @@ float heroiPontosPorSegY;
       nil]];
   
     // Anima o protagonista
-    CCSpriteFrameCache * cache = [CCSpriteFrameCache sharedSpriteFrameCache];
-    CCAnimation *andaHeroi = [CCAnimation animation];
-    [andaHeroi addFrame:
-     [cache spriteFrameByName:@"beastie-down40.png"]];
-    [andaHeroi addFrame:
-     [cache spriteFrameByName:@"beastie-up40.png"]];
-    [andaHeroi setDelay:0.2];
-    [heroi runAction:
-     [CCRepeatForever actionWithAction:
-      [CCAnimate actionWithAnimation:andaHeroi]]];
+    if(playerGame == 0)
+    {
+        CCSpriteFrameCache * cache = [CCSpriteFrameCache sharedSpriteFrameCache];
+        CCAnimation *andaHeroi = [CCAnimation animation];
+        [andaHeroi addFrame:
+         [cache spriteFrameByName:@"beastie-down40.png"]];
+        [andaHeroi addFrame:
+         [cache spriteFrameByName:@"beastie-up40.png"]];
+        [andaHeroi setDelay:0.2];
+        [heroi runAction:
+         [CCRepeatForever actionWithAction:
+          [CCAnimate actionWithAnimation:andaHeroi]]];
+    }
     
     
 }
@@ -132,13 +150,14 @@ float heroiPontosPorSegY;
     _isGameActive = TRUE;
     heroi.visible = TRUE;
     _tituloGameOver.scale = 0;
+    clickRestart.scale = 0;
     _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
 }
 
 // Inicio
 - (void)apertouInicio:(id)sender {
     [[SimpleAudioEngine sharedEngine] playEffect:@"powerup.caf"];
-    NSArray * nodes = [NSArray arrayWithObjects:_titulo1, _titulo2, clickInicio,
+    NSArray * nodes = [NSArray arrayWithObjects:_titulo1, _titulo2, clickInicio,jogarBeastie,jogarHexley,
                        nil];
     for (CCNode *node in nodes) {
         [node runAction:
@@ -155,22 +174,25 @@ float heroiPontosPorSegY;
     // Adicionamos o protagonista na cena...
     [self poeProtagonista];
     
-    
     _vidas = 3;
     _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
-    _vidasLabel.scale = 1.5;
+    _vidasLabel.scale = 1.5 * factorScale;
 
     _score = 0;
     _scoreLabel.string = [NSString stringWithFormat:@"Score: %d", _score];
-    _scoreLabel.scale = 1.5;
+    _scoreLabel.scale = 1.5 * factorScale;
     
     _forcaInimigoLabel.string = [NSString stringWithFormat:@"Resist: %d", forcaInimigo];
-    _forcaInimigoLabel.scale = 1.5;
+    _forcaInimigoLabel.scale = 1.5 * factorScale;
 
     _isGameActive = true;
 }
 
 - (void)poeTitulo {
+    
+    //0 = Beastie
+    //1 = Hexley
+    playerGame = 0;
     
     NSString *fontName = @"fonteCasual.fnt";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -189,7 +211,7 @@ float heroiPontosPorSegY;
     [_titulo1 runAction:
      [CCSequence actions:
       [CCDelayTime actionWithDuration:1.0],
-      [CCScaleTo actionWithDuration:1.0 scale:2.5],
+      [CCScaleTo actionWithDuration:1.0 scale:2.5 * factorScale],
       nil]];
     
     _titulo2 = [CCLabelBMFont labelWithString:@"Bala no TuX!" fntFile:fontName];
@@ -206,18 +228,19 @@ float heroiPontosPorSegY;
     [_titulo2 runAction:
      [CCSequence actions:
       [CCDelayTime actionWithDuration:1.0],
-      [CCScaleTo actionWithDuration:1.0 scale:3.5],
+      [CCScaleTo actionWithDuration:1.0 scale:3.5 * factorScale],
       nil]];
     
     // titulo Inicio
     CCLabelBMFont *playLabel = [CCLabelBMFont labelWithString:@"Iniciar" fntFile:fontName];
+    
     clickInicio = [CCMenuItemLabel itemWithLabel:playLabel 
                                        target:self
                                      selector:@selector(apertouInicio:)];
     [clickInicio setScale:0];
     
     [clickInicio setPosition:ccp(winSize.width/2, winSize.height * 0.3)];
-
+    
     CCMenu *menu = [CCMenu menuWithItems:clickInicio, nil];
     [menu setPosition:CGPointZero];
     //menu.position = CGPointZero;
@@ -227,14 +250,53 @@ float heroiPontosPorSegY;
      [CCSequence actions:
       [CCDelayTime actionWithDuration:2.0],
       [CCEaseOut actionWithAction:
-       [CCScaleTo actionWithDuration:0.5 scale:2.5] rate:4.0],
+       [CCScaleTo actionWithDuration:0.5 scale:2.5 * factorScale] rate:4.0],
+      nil]];
+    
+    
+    CCLabelBMFont *playBeastie = [CCLabelBMFont labelWithString:@"Jogar com Beastie" fntFile:fontName];
+    
+    jogarBeastie = [CCMenuItemLabel itemWithLabel:playBeastie
+                                          target:self
+                                        selector:@selector(jogarBestie:)];
+    [jogarBeastie setScale:0];
+    
+    [jogarBeastie setPosition:ccp(winSize.width/6, winSize.height * 0.15)];
+    
+    
+    CCLabelBMFont *playHexley = [CCLabelBMFont labelWithString:@"Jogar com Hexley" fntFile:fontName];
+    
+    jogarHexley = [CCMenuItemLabel itemWithLabel:playHexley
+                                          target:self
+                                        selector:@selector(jogarHexley:)];
+    [jogarHexley setScale:0];
+    
+    [jogarHexley setPosition:ccp(winSize.width/6, winSize.height * 0.1)];
+    
+    CCMenu *menuPlayer = [CCMenu menuWithItems:jogarBeastie,jogarHexley, nil];
+    [menuPlayer setPosition:CGPointZero];
+    //menu.position = CGPointZero;
+    [self addChild:menuPlayer];
+    
+    [jogarBeastie runAction:
+     [CCSequence actions:
+      [CCDelayTime actionWithDuration:2.0],
+      [CCEaseOut actionWithAction:
+       [CCScaleTo actionWithDuration:0.5 scale:1 * factorScale] rate:4.0],
+      nil]];
+    
+    [jogarHexley runAction:
+     [CCSequence actions:
+      [CCDelayTime actionWithDuration:2.0],
+      [CCEaseOut actionWithAction:
+       [CCScaleTo actionWithDuration:0.5 scale:1 * factorScale] rate:4.0],
       nil]];
     
     
     // Vidas
     _vidasLabel = [CCLabelBMFont labelWithString:@"Vidas: x" fntFile:fontName];
     _vidasLabel.scale = 0;
-    _vidasLabel.position = ccp(winSize.width/8, winSize.height * 0.95);
+    _vidasLabel.position = ccp(winSize.width*0.1, winSize.height * 0.85);
     [self addChild:_vidasLabel z:100];
 
     // Score
@@ -254,18 +316,19 @@ float heroiPontosPorSegY;
     _tituloGameOver = [CCLabelBMFont labelWithString:@"Restart" fntFile:fontName];
     _tituloGameOver.scale = 0; // Game Over fica invisivel
         
-    CCMenuItemLabel *itemRestart;
-    itemRestart = [CCMenuItemLabel itemWithLabel:_tituloGameOver
+    //CCMenuItemLabel *itemRestart;
+    clickRestart = [CCMenuItemLabel itemWithLabel:_tituloGameOver
                         target:self selector:@selector(apertouRestart:)];
+    clickRestart.scale = 0;
     
     
-    [itemRestart setPosition:ccp(winSize.width, winSize.height/2)];
+    [clickRestart setPosition:ccp(winSize.width, winSize.height/2)];
     
     CGSize NovoTamanho = CGSizeMake(winSize.width, 100);
     // Vamos ;tentar corrigir o tamanho da area do click do menu...
-    [itemRestart setContentSize:NovoTamanho];
+    [clickRestart setContentSize:NovoTamanho];
     
-    CCMenu *menuOver = [CCMenu menuWithItems:itemRestart, nil];
+    CCMenu *menuOver = [CCMenu menuWithItems:clickRestart, nil];
     [menuOver setPosition:CGPointZero];
     [self addChild:menuOver];
     
@@ -279,12 +342,37 @@ float heroiPontosPorSegY;
 
 }
 
-- (void)colocaBatchNode {
-    NSString *spritesImg = @"spriteSheet.png";
-    NSString *spritesPlist = @"spriteSheet.plist";
+-(void) exibeLabelLevel:(int) level {
+    NSString * texto = [NSString stringWithFormat:@"Level %d", level];
+    
+    NSString *fontName = @"fonteCasual.fnt";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        spritesImg = @"spriteSheet.png";
-        spritesPlist = @"spriteSheet.plist";
+        fontName = @"fonteCasual-hd.fnt";
+    }
+    _labelLevel = [CCLabelBMFont labelWithString:texto fntFile:fontName];
+    // efeitos
+    _labelLevel.scale = 0;
+    
+    //_titulo1.scale = 0.5;
+    _labelLevel.position = ccp(winSize.width/2, winSize.height/2);
+    [self addChild:_labelLevel z:100];
+    
+    // efeitos
+    [_labelLevel runAction:
+     [CCSequence actions:
+      [CCDelayTime actionWithDuration:1.0],
+      [CCScaleTo actionWithDuration:1.0 scale:2.5 * factorScale],
+      [CCDelayTime actionWithDuration:3.0],
+      [CCScaleTo actionWithDuration:1.0 scale:0],
+      nil]];
+}
+
+- (void)colocaBatchNode {
+    NSString *spritesImg = @"sprite_.png";
+    NSString *spritesPlist = @"sprite_.plist";
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        spritesImg = @"sprite_.png";
+        spritesPlist = @"sprite_.plist";
         // deveria ser um arquivo de High Definition (-hd)
     }
     batchNode = [CCSpriteBatchNode batchNodeWithFile:spritesImg];
@@ -298,16 +386,22 @@ float heroiPontosPorSegY;
 // AULA 2 - Passo 20
 - (void)setupArrays {
     inimigosArray = [[SpriteArray alloc] initWithCapacity:15
-                                           spriteFrameName:@"flyingtux40.png" 
+                                          spriteFrameName:[NSArray arrayWithObjects:
+                                                           @"flyingtux40.png",
+                                                           @"pengu40.png",
+                                                           nil]
                                                  batchNode:batchNode];
+    
     // Aula 2 - Passo 27
     balaArray = [[SpriteArray alloc] initWithCapacity:5
-                                       spriteFrameName:@"logo.png" 
+                                      spriteFrameName:[NSArray arrayWithObjects:
+                                                       @"logo.png",
+                                                       nil]
                                              batchNode:batchNode];
 }
 
 // AULA 4
-- (void)poeBackground {
+- (void)poeBackgroundImg:(NSString *) fileName {
     _vidas = 1; // Quando apertar Inicio ou Restart tera 3 vidas
     
     // Passo 1, criamos o CCParallaxNode
@@ -320,16 +414,17 @@ float heroiPontosPorSegY;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         // Colocar nos objets parallax variasveis com arquivo
         // imagem, como eh iPad, HD
-        _obj1 = [CCSprite spriteWithFile:@"SGallego_Rio.jpg"];
+        _obj1 = [CCSprite spriteWithFile:fileName];
         _obj2 = [CCSprite spriteWithFile:@"nuvem.gif"];
         
         _obj1.scaleX = 4.0;
         _obj1.scaleY = 2.0;
         
     } else {
-        _obj1 = [CCSprite spriteWithFile:@"SGallego_Rio.jpg"];
+        _obj1 = [CCSprite spriteWithFile:fileName];
         _obj2 = [CCSprite spriteWithFile:@"nuvem.gif"];
-    
+        _obj2.scaleX = factorScale;
+        _obj2.scaleY = factorScale;
     }
     
     // 3 passo determinar a velocidade relativa do bg
@@ -342,6 +437,10 @@ float heroiPontosPorSegY;
     // E agora mesma coisa no objeto1
     [_backgroundGame addChild:_obj1 z:-1 parallaxRatio:velocidadeBg positionOffset:ccp(0,winSize.height/2)];
     
+}
+- (void)trocaBackgroundImg:(NSString*) fileName {
+    [_backgroundGame removeAllChildrenWithCleanup:true];
+    [self poeBackgroundImg:fileName];
 }
 
 /*
@@ -383,7 +482,7 @@ float heroiPontosPorSegY;
         [self setIsTouchEnabled:YES];
         
         // AULA 4 - Coloca o Parallax Bg
-        [self poeBackground];
+        [self poeBackgroundImg:@"SGallego_Rio.jpg"];
 
     }
     return self;
@@ -396,6 +495,11 @@ float heroiPontosPorSegY;
     _vidas = 3;
     _score = 0;
     forcaInimigo = 0;
+
+    //Verifica se é um telefone para diminuir o tamanho dos objetos pela metade
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        factorScale = 0.5;
+    }
     
     CCSprite *sprite = [inimigosArray bossSprite];
     sprite.visible = NO;
@@ -454,22 +558,24 @@ float heroiPontosPorSegY;
     
     switch (randNum) {
         case 0:
-            scale = 0.25;
+            scale = 0.25 * factorScale;
             forca=1;
             break;
         case 1:
-            scale = 0.5;
+            scale = 0.5 * factorScale;
             forca = 1;
             break;
         case 2:
-            scale = 1.0;
+            scale = 1.0 * factorScale;
             forca = 2;
             break;
         default:
             break;
     }
-    
-    forca = randNum;
+
+    NSNumber * forcaPorTipoPersonagem = [inimigosArray currentItemForce];
+    int intForcaPorPersonagem = [forcaPorTipoPersonagem  intValue];
+    forca = randNum + intForcaPorPersonagem;
     tag = 10+randNum;
     
     CCSequence *sequenciaInimigo = [CCSequence actions:
@@ -482,16 +588,17 @@ float heroiPontosPorSegY;
 }
 
 -(void)adicionaSubBoss{
-    [self adicionaGenericBoss:2.5 forca:30 tag:14];
+    CCSprite *inimigo = [inimigosArray subBossSprite];
+    [self adicionaGenericBoss:inimigo scale: 2.5 * factorScale forca:30 tag:14];
 }
 
 -(void)adicionaBoss{
-    [self adicionaGenericBoss:5 forca:60 tag:15];
+    CCSprite *inimigo = [inimigosArray bossSprite];
+    [self adicionaGenericBoss:inimigo scale: 5 * factorScale forca:60 tag:15];
 }
 
--(void)adicionaGenericBoss:(float)scale forca:(int)forca tag:(int)tag{
+-(void)adicionaGenericBoss:(CCSprite*)inimigo scale:(float)scale forca:(int)forca tag:(int)tag{
     
-    CCSprite *inimigo = [inimigosArray bossSprite];
     _boss = inimigo;    
     
     CCMoveBy *movimentoEntrada = [CCMoveBy
@@ -595,10 +702,24 @@ float heroiPontosPorSegY;
                             _score+=5;
                             _isSubBossOnStage = NO;
                             _isSubBossDead = YES;
+                            [self addParticle:@"fire.png" startSize:5.0f endSize:40.0f speed:100 lifeVar:0.5f duration:3.0f position:inimigo.position z:9 tag:particulaAcertouInimigo];
+                            [[SimpleAudioEngine sharedEngine] playEffect:@"morrendo.mp3"
+                                                                   pitch:1.0f
+                                                                     pan:0.0f
+                                                                    gain:5.25f];
                             break;
                         //Boss
                         case 15:
                             _score+=15;
+                            _isBossOnStage = NO;
+                            [self trocaBackgroundImg:@"SGallego_Malibu.jpg"];
+                            [self exibeLabelLevel:2];
+                            [self addParticle:@"fire.png" startSize:5.0f endSize:40.0f speed:100 lifeVar:0.5f duration:3.0f position:inimigo.position z:9 tag:particulaAcertouInimigo];
+                            [[SimpleAudioEngine sharedEngine] playEffect:@"morrendo.mp3"
+                                                                   pitch:1.0f
+                                                                     pan:0.0f
+                                                                    gain:5.25f];
+                            break;
                         //Inimigo Comum
                         default:
                             _score++;
@@ -616,20 +737,7 @@ float heroiPontosPorSegY;
                     // Vamos mostrar a resistencia do inimigo
                     _forcaInimigoLabel.string = [NSString stringWithFormat:@"Resist: %d", forcaInimigo];
                 
-                    CCParticleSystem *particula = [CCParticleFire node];
-                    particula.texture = [[CCTextureCache sharedTextureCache] addImage:@"fire.png"];
-                    
-                    particula.startSize = 5.0f;
-                    particula.endSize = 10.0f;
-                    particula.speed = 100;
-                    particula.lifeVar = 0.5f;
-                    particula.duration = 1.5f;
-                    
-                    particula.position = inimigo.position;
-                    
-                    [self addChild:particula z:10 tag:particulaAcertouInimigo];
-                
-                    //[self addParticle:@"fire.png" startSize:5.0f endSize:10.0f speed:100 lifeVar:0.5f duration:1.5f position:inimigo.position z:10 tag:particulaAcertouInimigo];
+                    [self addParticle:@"fire.png" startSize:5.0f endSize:10.0f speed:100 lifeVar:0.5f duration:1.5f position:inimigo.position z:10 tag:particulaAcertouInimigo];
                 
                     break;
             } else
@@ -664,7 +772,8 @@ float heroiPontosPorSegY;
             _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
             if(_vidas < 1)
             {
-                _tituloGameOver.scale = 2;
+                _tituloGameOver.scale = 2 * factorScale;
+                clickRestart.scale = 1;
                 _isGameActive = false;
                 heroi.visible = false;
                 
@@ -720,6 +829,7 @@ float heroiPontosPorSegY;
             -(background.contentSize.width*background.scaleX/2 - winSize.width) ) {
             [_backgroundGame incrementOffset:ccp(2500,0) forChild:background];
         }
+        
     }
 }
 
@@ -839,10 +949,10 @@ float heroiPontosPorSegY;
     touchLocation = [[CCDirector sharedDirector] convertToGL: touchLocation];
     touchLocation = [self convertToNodeSpace:touchLocation];
     
-    //NSLog(@"X: %f, Y: %f", touchLocation.x, touchLocation.y);
+//    NSLog(@"X: %f, Y: %f", touchLocation.x, touchLocation.y);
     
     if(!heroi) return;
-    if((!heroi) || (touchLocation.x < 128)) return;
+    if((!heroi) || (touchLocation.x < 128 * factorScale)) return;
     
     
     
@@ -857,6 +967,8 @@ float heroiPontosPorSegY;
                                 ccp(bala.contentSize.width/2, 0));
     
     [bala setTag:20]; // marcando bala com tag 20 pra identificar no sender
+    bala.scaleY = 1.0 * factorScale;
+    bala.scaleX = 1.0 * factorScale;
     [bala runAction:
      [CCSequence actions:
       [CCMoveBy actionWithDuration:0.5
@@ -866,7 +978,15 @@ float heroiPontosPorSegY;
       nil]];
 }
 
+-(void)jogarBestie:(id)sender
+{
+    playerGame = 0;
+}
 
+-(void)jogarHexley:(id)sender
+{
+    playerGame = 1;
+}
 
 // Desaloca memoria
 // AULA 2 - Passo 25 dealloc de super e o que mais for preciso
