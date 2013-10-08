@@ -154,7 +154,7 @@ double factorScale = 1.0;
     _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
 }
 
-// Inicio
+// Inicio após selecionar personagem
 - (void)apertouInicio:(id)sender {
     [[SimpleAudioEngine sharedEngine] playEffect:@"powerup.caf"];
     NSArray * nodes = [NSArray arrayWithObjects:_titulo1, _titulo2,jogarBeastie,jogarHexley,
