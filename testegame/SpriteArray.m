@@ -42,8 +42,11 @@
             NSLog(@"Array qrde: %d random: %d indiceRandomigo: %d", quantidadeSprites, random, indiceRandomico);
             CCSprite *sprite = [CCSprite
                                 spriteWithSpriteFrameName:[spritesFrameName objectAtIndex:indiceRandomico]];
-            sprite.visible = NO; 
-            [batchNode addChild:sprite]; 
+            sprite.visible = NO;
+            if (indiceRandomico==1){
+                sprite.tag = 99;
+            }
+            [batchNode addChild:sprite];
             [array addObject:sprite];
 
             //segundo tipo de inimigo deve ser mais forte

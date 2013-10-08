@@ -628,6 +628,9 @@ double factorScale = 1.0;
     inimigo.position = position;    
     
     [inimigo stopAllActions];
+    if (inimigo.tag==12){
+        [inimigo runAction:[CCRepeatForever actionWithAction: [CCRotateBy actionWithDuration:5 angle:360]]];
+    }
     inimigo.visible = YES;
     [inimigo runAction: sequenciaInimigo];
 }
