@@ -157,7 +157,7 @@ double factorScale = 1.0;
 // Inicio
 - (void)apertouInicio:(id)sender {
     [[SimpleAudioEngine sharedEngine] playEffect:@"powerup.caf"];
-    NSArray * nodes = [NSArray arrayWithObjects:_titulo1, _titulo2, clickInicio,jogarBeastie,jogarHexley,
+    NSArray * nodes = [NSArray arrayWithObjects:_titulo1, _titulo2,jogarBeastie,jogarHexley,
                        nil];
     for (CCNode *node in nodes) {
         [node runAction:
@@ -232,26 +232,26 @@ double factorScale = 1.0;
       nil]];
     
     // titulo Inicio
-    CCLabelBMFont *playLabel = [CCLabelBMFont labelWithString:@"Iniciar" fntFile:fontName];
-    
-    clickInicio = [CCMenuItemLabel itemWithLabel:playLabel 
-                                       target:self
-                                     selector:@selector(apertouInicio:)];
-    [clickInicio setScale:0];
-    
-    [clickInicio setPosition:ccp(winSize.width/2, winSize.height * 0.3)];
-    
-    CCMenu *menu = [CCMenu menuWithItems:clickInicio, nil];
-    [menu setPosition:CGPointZero];
-    //menu.position = CGPointZero;
-    [self addChild:menu];
-    
-    [clickInicio runAction:
-     [CCSequence actions:
-      [CCDelayTime actionWithDuration:2.0],
-      [CCEaseOut actionWithAction:
-       [CCScaleTo actionWithDuration:0.5 scale:2.5 * factorScale] rate:4.0],
-      nil]];
+//    CCLabelBMFont *playLabel = [CCLabelBMFont labelWithString:@"Iniciar" fntFile:fontName];
+//    
+//    clickInicio = [CCMenuItemLabel itemWithLabel:playLabel 
+//                                       target:self
+//                                     selector:@selector(apertouInicio:)];
+//    [clickInicio setScale:0];
+//    
+//    [clickInicio setPosition:ccp(winSize.width/2, winSize.height * 0.3)];
+//    
+//    CCMenu *menu = [CCMenu menuWithItems:clickInicio, nil];
+//    [menu setPosition:CGPointZero];
+//    //menu.position = CGPointZero;
+//    [self addChild:menu];
+//    
+//    [clickInicio runAction:
+//     [CCSequence actions:
+//      [CCDelayTime actionWithDuration:2.0],
+//      [CCEaseOut actionWithAction:
+//       [CCScaleTo actionWithDuration:0.5 scale:2.5 * factorScale] rate:4.0],
+//      nil]];
     
     
     CCLabelBMFont *playBeastie = [CCLabelBMFont labelWithString:@"Jogar com Beastie" fntFile:fontName];
@@ -261,7 +261,7 @@ double factorScale = 1.0;
                                         selector:@selector(jogarBestie:)];
     [jogarBeastie setScale:0];
     
-    [jogarBeastie setPosition:ccp(winSize.width/6, winSize.height * 0.15)];
+    [jogarBeastie setPosition:ccp(winSize.width/2, winSize.height * 0.3)];
     
     
     CCLabelBMFont *playHexley = [CCLabelBMFont labelWithString:@"Jogar com Hexley" fntFile:fontName];
@@ -271,7 +271,7 @@ double factorScale = 1.0;
                                         selector:@selector(jogarHexley:)];
     [jogarHexley setScale:0];
     
-    [jogarHexley setPosition:ccp(winSize.width/6, winSize.height * 0.1)];
+    [jogarHexley setPosition:ccp(winSize.width/2, winSize.height * 0.2)];
     
     CCMenu *menuPlayer = [CCMenu menuWithItems:jogarBeastie,jogarHexley, nil];
     [menuPlayer setPosition:CGPointZero];
@@ -984,11 +984,13 @@ double factorScale = 1.0;
 -(void)jogarBestie:(id)sender
 {
     playerGame = 0;
+    [self apertouInicio:sender];
 }
 
 -(void)jogarHexley:(id)sender
 {
     playerGame = 1;
+    [self apertouInicio:sender];
 }
 
 // Desaloca memoria
