@@ -43,9 +43,6 @@
             CCSprite *sprite = [CCSprite
                                 spriteWithSpriteFrameName:[spritesFrameName objectAtIndex:indiceRandomico]];
             sprite.visible = NO;
-            if (indiceRandomico==1){
-                sprite.tag = 99;
-            }
             [batchNode addChild:sprite];
             [array addObject:sprite];
 
