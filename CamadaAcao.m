@@ -423,8 +423,8 @@ double factorScale = 1.0;
     } else {
         _obj1 = [CCSprite spriteWithFile:fileName];
         _obj2 = [CCSprite spriteWithFile:@"nuvem.gif"];
-        _obj2.scaleX = factorScale;
-        _obj2.scaleY = factorScale;
+        _obj1.scaleX = 3.0;
+        _obj1.scaleY = 1.8;
     }
     
     // 3 passo determinar a velocidade relativa do bg
