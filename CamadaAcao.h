@@ -61,6 +61,13 @@
     Boolean _moveUp;
     CCSprite* _boss;
     
+    //variaveis de controle do inimigo windows
+    CCSprite * inimigoWindows;
+    CCSprite * balaWindows;
+    Boolean _moveUpWindows;
+    double proximaBalaWindows;
+    
+    
 } 
 
 + (id)scene;

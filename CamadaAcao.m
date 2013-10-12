@@ -141,14 +141,18 @@ double factorScale = 1.0;
 }
 
 -(void)apertouRestart:(id)sender {
-    NSLog(@"Clicou Restart: %d", _vidas);
+    //NSLog(@"Clicou Restart: %d", _vidas);
     
     // Sai da funcao se nao estiver morto.
-    if (_vidas >0 ) return;
+    if (_vidas > 0 ) return;
     
-    [self configuraJogo];    
+    // reinicializa com configuracao original
+    [self configuraJogo];
+    
     _isGameActive = TRUE;
     heroi.visible = TRUE;
+    inimigoWindows.visible = TRUE;
+    
     _tituloGameOver.scale = 0;
     clickRestart.scale = 0;
     _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
@@ -173,6 +177,11 @@ double factorScale = 1.0;
     // No final de apertouInicio ou seja quando clicar pra comecar
     // Adicionamos o protagonista na cena...
     [self poeProtagonista];
+    
+    // adicionando inimigo Windows
+    [self poeInimigoWindows];
+    
+    
     
     _vidas = 3;
     _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
@@ -331,14 +340,6 @@ double factorScale = 1.0;
     CCMenu *menuOver = [CCMenu menuWithItems:clickRestart, nil];
     [menuOver setPosition:CGPointZero];
     [self addChild:menuOver];
-    
-    /*[clickRestart runAction:
-     [CCSequence actions:
-      [CCDelayTime actionWithDuration:2.0],
-      [CCEaseOut actionWithAction:
-       [CCScaleTo actionWithDuration:0.5 scale:2.5] rate:4.0],
-      nil]];*/
-
 
 }
 
@@ -398,6 +399,9 @@ double factorScale = 1.0;
                                                        @"logo.png",
                                                        nil]
                                              batchNode:batchNode];
+    
+    // adicionando os tiros do inimigo windows
+    balaWindows = [[CCSprite alloc] initWithFile:@"windows_bala.png"];
 }
 
 // AULA 4
@@ -536,9 +540,21 @@ double factorScale = 1.0;
             [self adicionaBoss];
         }
         
+        
         if(!_isSubBossOnStage){
             [self adicionaInimigoSimples];
+            
+            if(inimigoWindows.visible == TRUE){
+                
+                if (curTime > proximaBalaWindows) {
+                    //NSLog(@"Current time %f, proximaBala: %f", curTime, proximaBalaWindows);
+                    float randIntervalo = valorRandEntre(2.0, 4.0);
+                    proximaBalaWindows = randIntervalo + curTime;
+                    [self atiraInimigoWindows];
+                }
+            }
         }
+        else inimigoWindows.visible = NO;
     }
 }
 
@@ -732,7 +748,7 @@ double factorScale = 1.0;
                 }
                     bala.visible = NO;
                 
-                NSLog(@"Forca Inimigo: %d ",forcaInimigo);
+                    //NSLog(@"Forca Inimigo: %d ",forcaInimigo);
                 
                     //_score++;
                     _scoreLabel.string = [NSString stringWithFormat:@"Score: %d", _score];
@@ -746,50 +762,105 @@ double factorScale = 1.0;
             } else
                     matouInimigo = TRUE;
         }
-    }
     
-    // 2. Jogador vs inimigo
+    
+        // tratando a colisao entre os dois tiros
+        if (CGRectIntersectsRect(balaWindows.boundingBox, bala.boundingBox)){
+            bala.visible = NO;
+            balaWindows.visible = NO;
+        }
+    
+        // tratando o tiro do heroi que acertou o inimigoWindows
+        if (CGRectIntersectsRect(inimigoWindows.boundingBox, bala.boundingBox)) {
+        
+            [[SimpleAudioEngine sharedEngine] playEffect:@"morrendo.mp3"
+                                               pitch:1.0f
+                                                 pan:0.0f
+                                                gain:3.25f];
+            
+            bala.visible = NO;
+            
+            _score++;
+            forcaInimigo-=2;
+            
+            _scoreLabel.string = [NSString stringWithFormat:@"Score: %d", _score];
+            
+            // Vamos mostrar a resistencia do inimigo
+            _forcaInimigoLabel.string = [NSString stringWithFormat:@"Resist: %d", forcaInimigo];
+            
+            [self addParticle:@"fire.png" startSize:5.0f endSize:10.0f speed:100 lifeVar:0.5f duration:1.5f position:inimigoWindows.position z:10 tag:particulaAcertouInimigo];
+
+        }
+
+    }
+
+    // tratando o inimigo que acerta o heroi
     for (CCSprite *inimigo in inimigosArray.array) {
         if (!inimigo.visible) continue;
         if (CGRectIntersectsRect(inimigo.boundingBox, heroi.boundingBox))
         {
-//            heroi.visible = NO;
-            _vidas--;
             inimigo.visible = NO;
-            
-            CCParticleSystem *particula = [CCParticleSun node];
-            particula.texture = [[CCTextureCache sharedTextureCache] addImage:@"fire.png"];
-            
-            particula.startSize = 10.0f;
-            particula.endSize = 40.0f;
-            particula.speed = 200;
-            particula.lifeVar = 0.5f;
-            particula.duration = 0.5f;
-            
-            particula.position = heroi.position;
-            
-            [self addChild:particula z:10 tag:particulaAcertouHeroi];
-            
-            //[self addParticle:@"fire.png" startSize:10.0f endSize:40.0f speed:200 lifeVar:0.5f duration:0.5f position:heroi.position z:10 tag:particulaAcertouHeroi];
-            
-            _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
-            if(_vidas < 1)
-            {
-                _tituloGameOver.scale = 2 * factorScale;
-                clickRestart.scale = 1;
-                _isGameActive = false;
-                heroi.visible = false;
-                
-//                _vidas = 3;
-//                _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
-                
-                return;
-            }
+            [self acertouProtagonista];
             break;
         }
     }
     
+    
+    
+    // tratando o tiro da inimigo windows
+    
+    if (balaWindows.visible){
+        if (CGRectIntersectsRect(balaWindows.boundingBox, heroi.boundingBox))
+        {
+            balaWindows.visible = NO;
+            [self acertouProtagonista];
+        }
+    }
+    
+    
+    
+    
 }
+
+-(void) acertouProtagonista{
+
+    _vidas--;
+    
+    [[SimpleAudioEngine sharedEngine] playEffect:@"morrendo.mp3"
+                                           pitch:1.0f
+                                             pan:0.0f
+                                            gain:3.25f];
+    
+    CCParticleSystem *particula = [CCParticleSun node];
+    particula.texture = [[CCTextureCache sharedTextureCache] addImage:@"fire.png"];
+    
+    particula.startSize = 10.0f;
+    particula.endSize = 40.0f;
+    particula.speed = 200;
+    particula.lifeVar = 0.5f;
+    particula.duration = 0.5f;
+    
+    particula.position = heroi.position;
+    
+    [self addChild:particula z:10 tag:particulaAcertouHeroi];
+    
+    //[self addParticle:@"fire.png" startSize:10.0f endSize:40.0f speed:200 lifeVar:0.5f duration:0.5f position:heroi.position z:10 tag:particulaAcertouHeroi];
+    
+    _vidasLabel.string = [NSString stringWithFormat:@"Vidas: %d", _vidas];
+    if(_vidas < 1)
+    {
+        _tituloGameOver.scale = 2 * factorScale;
+        clickRestart.scale = 1;
+        _isGameActive = false;
+        heroi.visible = false;
+        inimigoWindows.visible = false;
+        
+        return;
+    }
+    
+    
+}
+
 
 -(void)addParticle:(NSString*)image startSize:(float)startSize endSize:(float)endSize speed:(float)speed lifeVar:(float)lifeVar duration:(float)duration position:(CGPoint)position z:(int)z tag:(enum MinhasParticulas)tag{
     
@@ -992,6 +1063,85 @@ double factorScale = 1.0;
     playerGame = 1;
     [self apertouInicio:sender];
 }
+
+
+
+
+// funcoes relativas ao inimigo windows
+
+
+-(void)poeInimigoWindows{
+    
+    
+    inimigoWindows = [CCSprite spriteWithFile:@"windows_mini.png"];
+    
+    [self addChild:inimigoWindows z:10];
+    
+    CCCallFuncN *chamaFuncaoMovimento = [CCCallFuncN
+                                         actionWithTarget:self
+                                         selector:@selector(movimentoInimigoWindows:)];
+    
+    _moveUpWindows = true;
+    
+    float widthInimigo = inimigoWindows.contentSize.width;
+    
+    CGPoint position = ccp(winSize.width-widthInimigo, winSize.height/2);
+    
+    CCSequence *sequenciaInimigo = [CCSequence actions: chamaFuncaoMovimento, nil];
+    
+    [self criaInimigo:inimigoWindows scale:1 forca:1 tag:25 position:position sequenciaInimigo:sequenciaInimigo];
+    [self addChild: balaWindows];
+}
+
+
+//Movimento de para cima e para baixo do Boss
+-(void)movimentoInimigoWindows:(CCNode *)sender{
+    
+    int direction = winSize.height-inimigoWindows.contentSize.height*1.3;
+    
+    if(!_moveUpWindows){
+        direction = inimigoWindows.contentSize.height*0.5;
+    }
+    
+    CCMoveTo *movimento = [CCMoveTo
+                           actionWithDuration:1
+                           position:ccp(winSize.width-inimigoWindows.contentSize.width, direction)];
+    
+    [inimigoWindows runAction:[CCSequence actions: movimento, [CCCallFuncN actionWithTarget:self                                                        selector:@selector(movimentoInimigoWindows:)], nil]];
+    
+    _moveUpWindows = !_moveUpWindows;
+}
+
+
+
+-(void)atiraInimigoWindows{
+    
+    [balaWindows stopAllActions];
+    
+    balaWindows.visible = YES;
+    balaWindows.position = ccpAdd(inimigoWindows.position,
+                                  ccp(balaWindows.contentSize.width/2, 0));
+    
+    
+    [[SimpleAudioEngine sharedEngine] playEffect:@"explosao_2.mp3"
+                                           pitch:1.0f
+                                             pan:0.0f
+                                            gain:10.25f ];
+    
+    [balaWindows setTag:20]; // marcando bala com tag 20 pra identificar no sender
+    balaWindows.scaleY = 1.0;
+    balaWindows.scaleX = 1.0;
+    [balaWindows runAction:
+     [CCSequence actions:
+      [CCMoveBy actionWithDuration:1.5
+                          position:ccp(-winSize.width-balaWindows.contentSize.width, 0)],
+      [CCCallFuncN actionWithTarget:self
+                           selector:@selector(invisNode:)],
+      nil]];
+
+}
+
+
 
 // Desaloca memoria
 // AULA 2 - Passo 25 dealloc de super e o que mais for preciso

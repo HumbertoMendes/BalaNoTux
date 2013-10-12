@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		215053981803153800881548 /* windows.png in Resources */ = {isa = PBXBuildFile; fileRef = 215053971803153800881548 /* windows.png */; };
+		219FDB4A1809DD8A00397472 /* windows_bala.png in Resources */ = {isa = PBXBuildFile; fileRef = 219FDB481809DD8A00397472 /* windows_bala.png */; };
+		219FDB4B1809DD8A00397472 /* windows_mini.png in Resources */ = {isa = PBXBuildFile; fileRef = 219FDB491809DD8A00397472 /* windows_mini.png */; };
+		219FDB551809EE7600397472 /* scream.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 219FDB541809EE7600397472 /* scream.mp3 */; };
+		219FDB571809F3A100397472 /* explosao_2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 219FDB561809F3A100397472 /* explosao_2.mp3 */; };
 		2CC80C111801CB3C00D188A5 /* sprite_.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2CC80C0F1801CB3C00D188A5 /* sprite_.plist */; };
 		2CC80C121801CB3C00D188A5 /* sprite_.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CC80C101801CB3C00D188A5 /* sprite_.png */; };
 		6EA14ABC1672B3D400109F7B /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = 6EA14ABB1672B3D400109F7B /* fire.png */; };
@@ -187,7 +190,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		215053971803153800881548 /* windows.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = windows.png; sourceTree = "<group>"; };
+		219FDB481809DD8A00397472 /* windows_bala.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = windows_bala.png; sourceTree = "<group>"; };
+		219FDB491809DD8A00397472 /* windows_mini.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = windows_mini.png; sourceTree = "<group>"; };
+		219FDB541809EE7600397472 /* scream.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = scream.mp3; sourceTree = "<group>"; };
+		219FDB561809F3A100397472 /* explosao_2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = explosao_2.mp3; sourceTree = "<group>"; };
 		2CC80C0F1801CB3C00D188A5 /* sprite_.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = sprite_.plist; sourceTree = "<group>"; };
 		2CC80C101801CB3C00D188A5 /* sprite_.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprite_.png; sourceTree = "<group>"; };
 		6EA14ABB1672B3D400109F7B /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fire.png; sourceTree = "<group>"; };
@@ -560,7 +566,9 @@
 			isa = PBXGroup;
 			children = (
 				849FD53C148441E700799E6C /* morrendo.mp3 */,
+				219FDB561809F3A100397472 /* explosao_2.mp3 */,
 				849FD5391484418800799E6C /* porrada.mp3 */,
+				219FDB541809EE7600397472 /* scream.mp3 */,
 				DF23BD9A147DD99F0040D85A /* powerup.caf */,
 				DFF197B4147D6C480027FBF3 /* patrick_soundtrack.mp3 */,
 			);
@@ -640,6 +648,8 @@
 				845D01A0148D77750035B8F9 /* Extras */,
 				845D019B148D72900035B8F9 /* nuvem.gif */,
 				DF114E3717D2B21200753932 /* SGallego_Italy.jpg */,
+				219FDB481809DD8A00397472 /* windows_bala.png */,
+				219FDB491809DD8A00397472 /* windows_mini.png */,
 				DF114E3817D2B21200753932 /* SGallego_Malibu.jpg */,
 				845D0198148D72410035B8F9 /* SGallego_Rio.jpg */,
 				845D01A1148D778A0035B8F9 /* Audio */,
@@ -648,7 +658,6 @@
 				DFF197B6147D720E0027FBF3 /* Stars1.plist */,
 				6EA14ABB1672B3D400109F7B /* fire.png */,
 				DFF197B7147D720E0027FBF3 /* Stars2.plist */,
-				215053971803153800881548 /* windows.png */,
 				DFF197B8147D720E0027FBF3 /* Stars3.plist */,
 				DFF197B2147D59B10027FBF3 /* fonteCasual-hd.fnt */,
 				DFF197AC147D589D0027FBF3 /* fonteCasual.fnt */,
@@ -1190,7 +1199,10 @@
 				DF114E3A17D2B21200753932 /* SGallego_Malibu.jpg in Resources */,
 				2CC80C111801CB3C00D188A5 /* sprite_.plist in Resources */,
 				2CC80C121801CB3C00D188A5 /* sprite_.png in Resources */,
-				215053981803153800881548 /* windows.png in Resources */,
+				219FDB4A1809DD8A00397472 /* windows_bala.png in Resources */,
+				219FDB4B1809DD8A00397472 /* windows_mini.png in Resources */,
+				219FDB551809EE7600397472 /* scream.mp3 in Resources */,
+				219FDB571809F3A100397472 /* explosao_2.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
